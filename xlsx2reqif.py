@@ -47,7 +47,7 @@ def get_images_from_excel(excel_file):
                                  zipfile.ZIP_DEFLATED)
     drawing_links_source.close()
     out_zip.close()
-    return images
+    return document_images
 
 
 def get_images(images, row, col):
@@ -76,15 +76,15 @@ if __name__ == "__main__":
 
     # create doc:
     mydoc = pyreqif.create.createDocument(document_reqif_id, title=document_title)
-    pyreqif.create.addDocType(doc_type_ref, mydoc)
+    # pyreqif.create.addDocType(doc_type_ref, mydoc)
 
     # create primitive datatype
-    pyreqif.create.addDatatype("_datatype_ID", mydoc)
+    pyreqif.create.addDatatype("_datatype_ID", mydoc, longName=None)
 
     # create columns
     for col in columns:
         pyreqif.create.addReqType(
-            "_some_requirement_type_id", "requirement Type", "_reqtype_for_" + col.replace(" ", "_"),
+            "_some_requirement_type_id", "Requirement_attributes", "_reqtype_for_" + col.replace(" ", "_"),
             col, "_datatype_ID", mydoc
         )
 
@@ -94,7 +94,7 @@ if __name__ == "__main__":
     # create child elements
     hierarchy_stack = []
     last_hierarchy_element = hierarchy
-    for row_nr in range(2, ws.max_row):
+    for row_nr in range(2, ws.max_row + 1):
         xls_req = dict(zip(columns, [ws.cell(row_nr, x).value for x in range(1, ws.max_column + 1)]))
         if "reqifId" not in xls_req:
             xls_req["reqifId"] = pyreqif.create.creatUUID()
