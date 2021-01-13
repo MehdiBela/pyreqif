@@ -2,3 +2,4 @@
 *.xlsx
 *.reqif
 *.reqifz
+venv/

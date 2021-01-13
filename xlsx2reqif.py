@@ -1,117 +1,70 @@
 #!/usr/bin/env python3
+
+"""
+Main module of the project
+Usage: ./xlsx2reqif.py source.xlsx
+"""
+
 import os
-import zipfile
-import xml.etree.ElementTree
+import io
+import sys
 import openpyxl
 import pyreqif.create
 import pyreqif.reqif
-import io
-import sys
-
-
-def get_images_from_excel(excel_file):
-    out_zip = zipfile.ZipFile(document_title + ".reqifz", 'w', zipfile.ZIP_DEFLATED)
-    in_excel = zipfile.ZipFile(excel_file)
-
-    if "xl/drawings/drawing1.xml" not in in_excel.namelist():
-        return []
-
-    ns = "{http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing}"
-    a_ns = "{http://schemas.openxmlformats.org/drawingml/2006/main}"
-
-    drawing_source = in_excel.open("xl/drawings/drawing1.xml")
-    drawing_tree = xml.etree.ElementTree.parse(drawing_source)
-    drawing_root = drawing_tree.getroot()
-
-    document_images = []
-    for anchor in drawing_root:
-        row = anchor.find(ns + "from/" + ns + "row").text
-        col = anchor.find(ns + "from/" + ns + "col").text
-        img_ref = anchor.find(ns + "pic/" + ns + "blipFill/" + a_ns + "blip").attrib[
-            "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}embed"]
-
-        document_images.append({"row": int(row), "col": int(col), "img_ref": img_ref})
-    drawing_source.close()
-    drawing_links_source = in_excel.open("xl/drawings/_rels/drawing1.xml.rels")
-    drawing_links_tree = xml.etree.ElementTree.parse(drawing_links_source)
-    drawing_links_root = drawing_links_tree.getroot()
-
-    for relation_ship in drawing_links_root:
-        element_id = relation_ship.attrib["Id"]
-        target = relation_ship.attrib["Target"]
-        for item in document_images:
-            if item["img_ref"] == element_id:
-                item["target"] = target.replace("../", "")
-                # copy all images to target:
-                out_zip.writestr(target.replace("../", ""), in_excel.read(target.replace("../", "xl/")),
-                                 zipfile.ZIP_DEFLATED)
-    drawing_links_source.close()
-    out_zip.close()
-    return document_images
-
-
-def get_images(images, row, col):
-    return_pictures = []
-    for image in images:
-        if image["row"] == row and image["col"] == col:
-            return_pictures.append(image)
-    return return_pictures
-
 
 if __name__ == "__main__":
     file_name = sys.argv[1]
     document_title, _ = os.path.splitext(os.path.basename(file_name))
-    output_file = document_title + ".reqifz"
-    images = get_images_from_excel(file_name)
     wb = openpyxl.load_workbook(file_name)
     ws = wb.active
 
-    columns = []
+    cols = []
     for col_nr in range(1, ws.max_column + 1):
-        columns.append(ws.cell(1, col_nr).value)
+        cols.append(ws.cell(1, col_nr).value)
 
-    document_reqif_id = "_{}ReqifId-Header".format(document_title)
-    spec_reqif_id = "_{}ReqifId--spec".format(document_title)
-    doc_type_ref = "_doc_type_ref"
+    DOCUMENT_REQIF_ID = "_{}ReqifId-Header".format(document_title)
+    SPEC_REQIF_ID = "_{}ReqifId--spec".format(document_title)
+    DOC_TYPE_REF = "_DOC_TYPE_REF"
 
     # create doc:
-    mydoc = pyreqif.create.createDocument(document_reqif_id, title=document_title)
-    # pyreqif.create.addDocType(doc_type_ref, mydoc)
+    document = pyreqif.create.createDocument(DOCUMENT_REQIF_ID, title=document_title)
+    # pyreqif.create.addDocType(DOC_TYPE_REF, document)
 
     # create primitive datatype
-    pyreqif.create.addDatatype("_datatype_ID", mydoc, longName=None)
+    pyreqif.create.addDatatype("_datatype_ID", document, longName=None)
 
     # create columns
-    for col in columns:
+    SPEC_ID = "_some_requirement_type_id"
+    SPEC_LONG_NAME = "Requirement attributes"
+    TYPE_REF = "_datatype_ID"
+    for col in cols:
         pyreqif.create.addReqType(
-            "_some_requirement_type_id", "Requirement_attributes", "_reqtype_for_" + col.replace(" ", "_"),
-            col, "_datatype_ID", mydoc
+            SPEC_ID, SPEC_LONG_NAME, "_reqtype_for_" + col.replace(" ", "_"),
+            col, "_datatype_ID", document
         )
 
     # create document hierarchy head
-    hierarchy = pyreqif.create.createHierarchHead(document_title, typeRef=doc_type_ref, id=spec_reqif_id)
+    hierarchy = pyreqif.create.createHierarchHead(
+        document_title, typeRef=DOC_TYPE_REF, id=SPEC_REQIF_ID
+    )
 
     # create child elements
     hierarchy_stack = []
     last_hierarchy_element = hierarchy
     for row_nr in range(2, ws.max_row + 1):
-        xls_req = dict(zip(columns, [ws.cell(row_nr, x).value for x in range(1, ws.max_column + 1)]))
+        xls_req = dict(zip(cols, [ws.cell(row_nr, x).value for x in range(1, ws.max_column + 1)]))
         if "reqifId" not in xls_req:
             xls_req["reqifId"] = pyreqif.create.creatUUID()
-        for col in columns:
-            # do images:
-            pictures = get_images(images, row_nr - 1, columns.index(col))
-            if type(xls_req[col]) == str:
+        for col in cols:
+            if isinstance(xls_req[col], str):
                 xls_req[col] = xls_req[col].replace("<", "&gt;")
                 xls_req[col].replace("<", "&lt;")
-            if len(pictures) > 0:
-                for pic in pictures:
-                    xls_req[col] = "" if xls_req[col] is None else xls_req[col]
-                    xls_req[col] += "<img src={}>".format(pic["target"])
             if xls_req[col] is not None:
-                pyreqif.create.addReq(xls_req["reqifId"], "_some_requirement_type_id",
-                                      "<div>" + str(xls_req[col]) + "</div>", "_reqtype_for_" + col.replace(" ", "_"),
-                                      mydoc)
+                CONTENT = "<div>%s</div>" % str(xls_req[col])
+                REQ_TYPE_REF = "_reqtype_for_" + col.replace(" ", "_")
+                pyreqif.create.addReq(
+                    xls_req["reqifId"], SPEC_ID, CONTENT, REQ_TYPE_REF, document
+                )
 
         # do hierarchy
         hierarchy_element = pyreqif.create.createHierarchElement(xls_req["reqifId"])
@@ -125,11 +78,10 @@ if __name__ == "__main__":
         current_head.addChild(hierarchy_element)
         last_hierarchy_element = hierarchy_element
 
-    mydoc.hierarchy.append(hierarchy)
+    document.hierarchy.append(hierarchy)
 
     # save reqif to string
     strIO = io.StringIO()
-    pyreqif.reqif.dump(mydoc, strIO)
 
     with open(document_title + '.reqif', "w") as f:
         f.write(strIO.getvalue())
