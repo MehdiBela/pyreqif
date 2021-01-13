@@ -45,6 +45,10 @@ def addReqType(specObjId, specObjLongName, specAttribId, collumName, typeRef, my
 
 
 def addReq(id, specType, content, reqTypeRef, mydoc, lastChange=datetime.datetime.today().isoformat()):
+    longName = ""
+    if "ReqIF.LongName" in reqTypeRef:
+        # TODO : require longName to be first col
+        longName = content.replace("<div>", "").replace("</div>", "")
     mydoc.addRequirement(
         {
             "typeRef": specType, "identifier": id, "lastChange": lastChange,
@@ -53,7 +57,8 @@ def addReq(id, specType, content, reqTypeRef, mydoc, lastChange=datetime.datetim
                     id: {
                         "content": content, "attributeRef": reqTypeRef, "type": "embeddedDoc"
                     }
-                }
+                },
+            "longName": longName,
         }
     )
 
