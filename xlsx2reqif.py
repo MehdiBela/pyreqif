@@ -82,6 +82,6 @@ if __name__ == "__main__":
 
     # save reqif to string
     strIO = io.StringIO()
-
+    pyreqif.reqif.dump(document, strIO)
     with open(document_title + '.reqif', "w") as f:
         f.write(strIO.getvalue())
