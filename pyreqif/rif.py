@@ -255,23 +255,23 @@ def load(f):
         xslt = '''<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
         <xsl:output method="xml" indent="no"/>
     
-        <xsl:template match="/|comment()|processing-instruction()">
+        <xsl:templates match="/|comment()|processing-instruction()">
             <xsl:copy>
               <xsl:apply-templates/>
             </xsl:copy>
-        </xsl:template>
+        </xsl:templates>
     
-        <xsl:template match="*">
+        <xsl:templates match="*">
             <xsl:element name="{local-name()}">
               <xsl:apply-templates select="@*|node()"/>
             </xsl:element>
-        </xsl:template>
+        </xsl:templates>
     
-        <xsl:template match="@*">
+        <xsl:templates match="@*">
             <xsl:attribute name="{local-name()}">
               <xsl:value-of select="."/>
             </xsl:attribute>
-        </xsl:template>
+        </xsl:templates>
         </xsl:stylesheet>
         '''
 
