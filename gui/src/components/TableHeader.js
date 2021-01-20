@@ -1,8 +1,7 @@
 const TableHeader = (props) => {
-    return(
+    return (
         <th>{props.name}</th>
     )
-
-}
+};
 
 export default TableHeader;

@@ -14,14 +14,16 @@ const TableHead = (props) => {
     ];
     return (
         <thead>
-        {
-            headers.forEach(i => {
-                    return <TableHeader name={i}/>
-                }
-            )
-        }
+        <tr>
+            {
+                headers.map((header, count) => {
+                        return <TableHeader name={header} key={`head${count}`}/>
+                    }
+                )
+            }
+        </tr>
         </thead>
     )
-}
+};
 
 export default TableHead;
