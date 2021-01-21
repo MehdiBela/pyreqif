@@ -2,7 +2,7 @@ const TableHeader = (props) => {
     const bgHover = "bg-primary";
 
     function dragStart(e) {
-
+        e.dataTransfer.setData("text", props.key);
     }
 
     function dragExit(e) {
@@ -15,7 +15,8 @@ const TableHeader = (props) => {
     }
 
     return (
-        <th style={styles.headerStyle} onDragOver={allowDrop} onDragStart={dragStart} onDragLeave={dragExit} onDragExit={dragExit}>
+        <th style={styles.headerStyle} onDragOver={allowDrop} onDragStart={dragStart} onDragLeave={dragExit}
+            onDragExit={dragExit}>
             {props.name}
         </th>
     )
