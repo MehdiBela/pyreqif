@@ -6,7 +6,7 @@ const TableHeader = (props) => {
 
 const styles = {
     theaderStyle: {
-        backgroundColor:"#2980b9",
+        backgroundColor: "#2980b9",
         cursor: "pointer",
         padding: "1em"
     }
