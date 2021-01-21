@@ -28,3 +28,5 @@ gui/.env.production.local
 gui/npm-debug.log*
 gui/yarn-debug.log*
 gui/yarn-error.log*
+
+gui/.eslintcache
