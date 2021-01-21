@@ -24,6 +24,8 @@ const TableHead = (props) => {
         </tr>
         </thead>
     )
+
 };
+
 
 export default TableHead;
