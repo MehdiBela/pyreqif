@@ -8,7 +8,6 @@ class Table extends React.Component {
             <div>
                 <table style={styles.tableStyle}>
                     <TableHead/>
-                git
                     <tbody>
                     <tr>
                         <td>contenu 1A</td>
@@ -41,10 +40,7 @@ class Table extends React.Component {
 
 const styles = {
     tableStyle: {
-        width: "70%",
-        margin: "3em auto",
-        borderCollapse: "collapse",
-        border: "1px solid black"
+        width: "100%",
     }
 }
 

@@ -1,14 +1,30 @@
 const TableHeader = (props) => {
+    const bgHover = "bg-primary";
+
+    function dragStart(e) {
+
+    }
+
+    function dragExit(e) {
+        e.target.classList.remove(bgHover);
+    }
+
+    function allowDrop(e) {
+        e.preventDefault();
+        e.target.classList.add(bgHover);
+    }
+
     return (
-        <th style={styles.theaderStyle}>{props.name}</th>
+        <th style={styles.headerStyle} onDragOver={allowDrop} onDragStart={dragStart} onDragLeave={dragExit} onDragExit={dragExit}>
+            {props.name}
+        </th>
     )
 };
 
 const styles = {
-    theaderStyle: {
-        backgroundColor: "#2980b9",
+    headerStyle: {
         cursor: "pointer",
-        padding: "1em"
+        padding: 2
     }
 }
 
