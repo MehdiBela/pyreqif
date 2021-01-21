@@ -27,5 +27,4 @@ const TableHead = (props) => {
 
 };
 
-
 export default TableHead;

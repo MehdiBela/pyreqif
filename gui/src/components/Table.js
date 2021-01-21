@@ -1,5 +1,6 @@
 import * as React from "react";
 import TableHead from "./TableHead";
+import TableBody from "./TableBody";
 
 class Table extends React.Component {
     render() {
@@ -7,6 +8,7 @@ class Table extends React.Component {
             <div>
                 <table style={styles.tableStyle}>
                     <TableHead/>
+                    <TableBody/>
                     <tbody>
                     <tr>
                         <td>contenu 1A</td>
