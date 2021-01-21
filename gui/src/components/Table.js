@@ -8,7 +8,7 @@ class Table extends React.Component {
             <div>
                 <table style={styles.tableStyle}>
                     <TableHead/>
-                    <TableBody/>
+                git
                     <tbody>
                     <tr>
                         <td>contenu 1A</td>
