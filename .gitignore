@@ -30,3 +30,7 @@ gui/yarn-debug.log*
 gui/yarn-error.log*
 
 gui/.eslintcache
+
+# py installer build
+build/
+dist/
