@@ -6,8 +6,9 @@ from flask import Flask, render_template, Blueprint, request, Response
 app = Flask(
     __name__,
     template_folder=os.path.join(os.path.dirname(__file__), "templates"),
-    static_folder=os.path.join(os.path.dirname(__file__), "gui/build/static")
+    static_folder=os.path.join(os.path.dirname(__file__), "static/react/static")
 )
+
 #  built settings
 if getattr(sys, 'frozen', False):
     template_folder = os.path.join(sys._MEIPASS, 'templates')
