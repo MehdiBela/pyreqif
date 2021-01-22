@@ -3,6 +3,15 @@ table, tr, td, th {
     border-collapse: collapse;
 }
 
+table {
+    width: 100%;
+}
+
+th {
+    cursor: pointer;
+    padding: 2px;
+}
+
 .bg-primary {
     background-color: #337ab7;
 }

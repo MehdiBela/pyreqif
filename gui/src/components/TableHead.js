@@ -28,7 +28,7 @@ const TableHead = (props) => {
         <thead onDrop={drop}>
         <tr>
             {
-                 tableHeaders.map(i => i)
+                tableHeaders.map(i => i)
             }
         </tr>
         </thead>

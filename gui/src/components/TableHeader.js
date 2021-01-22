@@ -15,18 +15,11 @@ const TableHeader = (props) => {
     }
 
     return (
-        <th style={styles.headerStyle} onDragOver={allowDrop} onDragStart={dragStart} onDragLeave={dragExit}
-            onDragExit={dragExit}>
+        <th onDragOver={allowDrop} onDragStart={dragStart} onDragLeave={dragExit}
+            onDragExit={dragExit} draggable="true">
             {props.name}
         </th>
     )
 };
-
-const styles = {
-    headerStyle: {
-        cursor: "pointer",
-        padding: 2
-    }
-}
 
 export default TableHeader;
