@@ -15,7 +15,7 @@ const TableHeader = (props) => {
     }
 
     return (
-        <th style={styles.headerStyle} onDragOver={allowDrop} onDragStart={dragStart} onDragLeave={dragExit} draggable={true}
+        <th onDragOver={allowDrop} onDragStart={dragStart} onDragLeave={dragExit} draggable={true}
             onDragExit={dragExit}>
             {props.name}
         </th>
