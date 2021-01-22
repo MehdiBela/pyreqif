@@ -6,7 +6,7 @@ class Table extends React.Component {
     render() {
         return (
             <div>
-                <table style={styles.tableStyle}>
+                <table>
                     <TableHead/>
                     <tbody>
                     <tr>
@@ -37,12 +37,5 @@ class Table extends React.Component {
         )
     }
 }
-
-const styles = {
-    tableStyle: {
-        width: "100%",
-    }
-}
-
 
 export default Table;
