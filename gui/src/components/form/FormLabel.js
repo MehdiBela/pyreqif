@@ -5,7 +5,7 @@ class FormLabel extends React.Component {
         return (
             <label>
                 <p>Choisissez le fichier à importer (xls, xlsx)</p>
-                <input type="file"/>
+                <input type="file" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
             </label>
         )
     }
