@@ -1,7 +1,7 @@
 import * as React from "react";
 import FormLabel from "./FormLabel";
 import FormSubmit from "./FormSubmit";
-import FormUploader from "./FormUploader";
+//import FormUploader from "./FormUploader";
 import FormSuccesMsg from "./FormSuccesMsg";
 
 class Form extends React.Component {
@@ -11,8 +11,7 @@ class Form extends React.Component {
                 <form id="form">
                     <FormLabel />
                     <FormSubmit />
-                    <FormUploader />
-                    <FormSuccesMsg />
+gi                    <FormSuccesMsg />
                 </form>
             </div>
         )
