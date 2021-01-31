@@ -1,6 +1,6 @@
 import * as React from "react";
 
-class FormSuccesMsg extends React.Component {
+class FormSuccessMsg extends React.Component {
     render() {
         return (
             <p id="msg"></p>
@@ -8,4 +8,4 @@ class FormSuccesMsg extends React.Component {
     }
 }
 
-export default FormSuccesMsg;
+export default FormSuccessMsg;

@@ -6,13 +6,13 @@ from flask import Flask, render_template, Blueprint, request, Response
 app = Flask(
     __name__,
     template_folder=os.path.join(os.path.dirname(__file__), "templates"),
-    static_folder=os.path.join(os.path.dirname(__file__), "static/react/static")
+    static_folder=os.path.join(os.path.dirname(__file__), "static")
 )
 
 #  built settings
 if getattr(sys, 'frozen', False):
-    template_folder = os.path.join(sys._MEIPASS, 'templates')
-    static_folder = os.path.join(sys._MEIPASS, "static")
+    template_folder = os.path.join(sys._MEIPASS, '../templates')
+    static_folder = os.path.join(sys._MEIPASS, "../static")
     app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
 
 bp = Blueprint("index", __name__)
@@ -21,7 +21,7 @@ bp = Blueprint("index", __name__)
 @bp.route("/", methods=("GET", "POST"))
 def index():
     if request.method == "GET":
-        return render_template("base.html", flask_token="HelloWorld")
+        return render_template("base.html")
 
 
 app.register_blueprint(bp)
