@@ -15,7 +15,7 @@ const TableHead = (props) => {
         ];
 
     const tableHeaders = headers.map((header, count) => {
-        return <TableHeader name={header} key={`head${count}`}/>
+        return <TableHeader name={header} key={`head${count}`} id={`head${count}`}/>
     });
 
     function drop(e) {

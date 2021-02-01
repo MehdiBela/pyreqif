@@ -2,7 +2,7 @@ const TableHeader = (props) => {
     const bgHover = "bg-primary";
 
     function dragStart(e) {
-        e.dataTransfer.setData("text", props.key);
+        e.dataTransfer.setData("text", e.target.id);
     }
 
     function dragExit(e) {
