@@ -22,6 +22,7 @@ const TableHead = (props) => {
         for (const th of document.querySelectorAll(`th.${bgHover}`)) {
             th.classList.remove(bgHover);
         }
+        console.log(e);
     }
 
     return (
