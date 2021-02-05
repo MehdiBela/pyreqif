@@ -1,13 +1,24 @@
 import os
 import sys
+from io import BytesIO
 
-from flask import Flask, render_template, Blueprint, request, Response
+from flask import Flask, render_template, Blueprint, request, jsonify
+from flask_cors import CORS, cross_origin
+from openpyxl.utils.exceptions import InvalidFileException
+
+from backend.lib import get_excel_preview_data, TooManySheetsException
+from backend.xlsx2reqif import convert_file
+
+INVALID_FILE_ERROR = "Invalid file format, please choose a valid Excel spreadsheet. Supported formats are: .xlsx,.xlsm,.xltx,.xltm."
 
 app = Flask(
     __name__,
     template_folder=os.path.join(os.path.dirname(__file__), "templates"),
     static_folder=os.path.join(os.path.dirname(__file__), "static")
 )
+
+app.config['CORS_HEADERS'] = 'Content-Type'
+cors = CORS(app, resources={r"/": {"origins": "*"}})
 
 #  built settings
 if getattr(sys, 'frozen', False):
@@ -18,10 +29,27 @@ if getattr(sys, 'frozen', False):
 bp = Blueprint("index", __name__)
 
 
+@cross_origin(origin='localhost', headers=['Content-Type', 'Authorization'])
 @bp.route("/", methods=("GET", "POST"))
 def index():
     if request.method == "GET":
         return render_template("base.html")
+    elif request.method == "POST":
+        if request.files and request.files.get("file"):
+            excel_file = request.files.get("file")
+            excel_data = BytesIO(excel_file.read())
+            try:
+                fields = request.post.get("fields")
+                file_data = convert_file(excel_data, excel_file.filename, save_file=False)
+            except AttributeError:
+                pass
+            try:
+                data = get_excel_preview_data(excel_data)
+                return jsonify({"data": data})
+            except InvalidFileException:
+                return jsonify({"error": INVALID_FILE_ERROR}), 400
+            except TooManySheetsException as e:
+                return jsonify({"error": e.args[0]}), 400
 
 
 app.register_blueprint(bp)

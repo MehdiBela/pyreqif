@@ -5,47 +5,44 @@ Main module of the project
 Usage: ./xlsx2reqif.py source.xlsx
 """
 
-import os
 import io
-import sys
 import openpyxl
 import pyreqif.create
 import pyreqif.reqif
 
-if __name__ == "__main__":
-    file_name = sys.argv[1]
-    document_title, _ = os.path.splitext(os.path.basename(file_name))
-    wb = openpyxl.load_workbook(file_name)
+
+def convert_file(excel_file, file_name, save_file):
+    wb = openpyxl.load_workbook(excel_file)
     ws = wb.active
 
     cols = []
     for col_nr in range(1, ws.max_column + 1):
         cols.append(ws.cell(1, col_nr).value)
 
-    DOCUMENT_REQIF_ID = "_{}ReqifId-Header".format(document_title)
-    SPEC_REQIF_ID = "_{}ReqifId--spec".format(document_title)
-    DOC_TYPE_REF = "_DOC_TYPE_REF"
+    document_reqif_id = "_{}ReqifId-Header".format(file_name)
+    spec_reqif_id = "_{}ReqifId--spec".format(file_name)
+    doc_type_ref = "_DOC_TYPE_REF"
 
     # create doc:
-    document = pyreqif.create.createDocument(DOCUMENT_REQIF_ID, title=document_title)
-    # pyreqif.create.addDocType(DOC_TYPE_REF, document)
+    document = pyreqif.create.createDocument(document_reqif_id, title=file_name)
+    # pyreqif.create.addDocType(doc_type_ref, document)
 
     # create primitive datatype
     pyreqif.create.addDatatype("_datatype_ID", document, longName=None)
 
     # create columns
-    SPEC_ID = "_some_requirement_type_id"
-    SPEC_LONG_NAME = "Requirement attributes"
-    TYPE_REF = "_datatype_ID"
+    spec_id = "_some_requirement_type_id"
+    spec_long_name = "Requirement attributes"
+    type_ref = "_datatype_ID"
     for col in cols:
         pyreqif.create.addReqType(
-            SPEC_ID, SPEC_LONG_NAME, "_reqtype_for_" + col.replace(" ", "_"),
+            spec_id, spec_long_name, "_reqtype_for_" + col.replace(" ", "_"),
             col, "_datatype_ID", document
         )
 
     # create document hierarchy head
     hierarchy = pyreqif.create.createHierarchHead(
-        document_title, typeRef=DOC_TYPE_REF, id=SPEC_REQIF_ID
+        file_name, typeRef=doc_type_ref, id=spec_reqif_id
     )
 
     # create child elements
@@ -60,10 +57,10 @@ if __name__ == "__main__":
                 xls_req[col] = xls_req[col].replace("<", "&gt;")
                 xls_req[col].replace("<", "&lt;")
             if xls_req[col] is not None:
-                CONTENT = "<div>%s</div>" % str(xls_req[col])
-                REQ_TYPE_REF = "_reqtype_for_" + col.replace(" ", "_")
+                content = "<div>%s</div>" % str(xls_req[col])
+                req_type_ref = "_reqtype_for_" + col.replace(" ", "_")
                 pyreqif.create.addReq(
-                    xls_req["reqifId"], SPEC_ID, CONTENT, REQ_TYPE_REF, document
+                    xls_req["reqifId"], spec_id, content, req_type_ref, document
                 )
 
         # do hierarchy
@@ -81,7 +78,10 @@ if __name__ == "__main__":
     document.hierarchy.append(hierarchy)
 
     # save reqif to string
-    strIO = io.StringIO()
-    pyreqif.reqif.dump(document, strIO)
-    with open(document_title + '.reqif', "w") as f:
-        f.write(strIO.getvalue())
+    str_io = io.StringIO()
+    pyreqif.reqif.dump(document, str_io)
+    if save_file:
+        with open(file_name + '.reqif', "w") as f:
+            f.write(str_io.getvalue())
+    else:
+        return str_io.getvalue()
