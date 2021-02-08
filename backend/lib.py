@@ -1,3 +1,6 @@
+import configparser
+import json
+
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.writer.excel import save_virtual_workbook
@@ -52,6 +55,21 @@ def reorder_data(file_bytes, headers):
             new_ws.delete_cols(i + 1)
     new_wb.save("out.xlsx")
     return save_virtual_workbook(new_wb)
+
+
+def get_saved_configurations(configuration_file):
+    config = configparser.ConfigParser()
+    config.read(configuration_file)
+    configurations = []
+    for i in config.sections():
+        headers = config[i].get("headers")
+        if headers:
+            headers = headers.split(",")
+            configurations.append({
+                "name": i,
+                "headers": headers
+            })
+    return json.dumps(configurations)
 
 
 class TooManySheetsException(Exception):

@@ -7,10 +7,11 @@ from flask import Flask, render_template, Blueprint, request, jsonify
 from flask_cors import CORS, cross_origin
 from openpyxl.utils.exceptions import InvalidFileException
 
-from backend.lib import get_excel_preview_data, TooManySheetsException, reorder_data
+from backend.lib import get_excel_preview_data, TooManySheetsException, reorder_data, get_saved_configurations
 from backend.xlsx2reqif import convert_file
 
 INVALID_FILE_ERROR = "Invalid file format, please choose a valid Excel spreadsheet. Supported formats are: .xlsx,.xlsm,.xltx,.xltm."
+CONFIGURATION_FILE = "config.ini"
 
 app = Flask(
     __name__,
@@ -25,6 +26,7 @@ cors = CORS(app, resources={r"/": {"origins": "*"}})
 if getattr(sys, 'frozen', False):
     template_folder = os.path.join(sys._MEIPASS, '../templates')
     static_folder = os.path.join(sys._MEIPASS, "../static")
+    CONFIGURATION_FILE = os.path.join("lib", CONFIGURATION_FILE)
     app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
 
 bp = Blueprint("index", __name__)
@@ -34,7 +36,8 @@ bp = Blueprint("index", __name__)
 @bp.route("/", methods=("GET", "POST"))
 def index():
     if request.method == "GET":
-        return render_template("base.html")
+        configurations = get_saved_configurations(CONFIGURATION_FILE)
+        return render_template("base.html", configurations=configurations)
     elif request.method == "POST":
         if request.files and request.files.get("file"):
             excel_file = request.files.get("file")

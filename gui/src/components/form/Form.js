@@ -1,4 +1,5 @@
 import * as React from "react";
+import ConfigurationSelect from "./ConfigurationSelect";
 
 class Form extends React.Component {
     constructor(props) {
@@ -7,7 +8,12 @@ class Form extends React.Component {
             disabled: true,
             errors: [],
             fileData: null,
+            configName: ""
         };
+    }
+
+    addConfigurations(name, headers){
+
     }
 
     /**
@@ -92,8 +98,15 @@ class Form extends React.Component {
                 <div style={this.state.fileData ? styles.dBlock : styles.dNone}>
                     <p>Drag and drop table headers until they match your file data</p>
                     <p>You can right click on a column header or on a column to remove it</p>
+                    <p>
+                        <ConfigurationSelect/>
+                    </p>
                     <label htmlFor={"name"}>Name this configuration</label>
-                    <input name={"name"} id={"name"}/>
+                    <input name={"name"} id={"name"} onChange={(e) => {
+                        const state = {...this.state};
+                        state.configName = e.target.value;
+                        this.setState(state);
+                    }}/>
                     <button>Get ReqIF file</button>
                 </div>
             </form>
