@@ -38,3 +38,5 @@ gui/.eslintcache
 # py installer build
 build/
 dist/
+backend/static
+backend/templates
