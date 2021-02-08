@@ -3,15 +3,18 @@ import * as React from "react";
 class ConfigurationSelect extends React.Component {
     constructor(props) {
         super(props);
-        if (props.hasOwnProperty("configurations") && props.configurations.length) {
+        try {
             this.state = {
-                configurations: props.configurations
+                // eslint-disable-next-line no-undef
+                configurations: configurations
             }
-        } else {
+        } catch {
             this.state = {
+                // eslint-disable-next-line no-undef
                 configurations: []
             }
         }
+
     }
 
     render() {

@@ -1,5 +1,4 @@
 import configparser
-import json
 
 import openpyxl
 from openpyxl import Workbook
@@ -69,7 +68,7 @@ def get_saved_configurations(configuration_file):
                 "name": i,
                 "headers": headers
             })
-    return json.dumps(configurations)
+    return configurations
 
 
 class TooManySheetsException(Exception):
