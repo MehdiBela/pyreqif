@@ -4,7 +4,7 @@ import TableHead from "./TableHead";
 class Table extends React.Component {
     render() {
         return (
-            <div>
+            <div className={this.props.data ? "d-block" : "d-none"}>
                 <table>
                     <TableHead/>
                     <tbody>

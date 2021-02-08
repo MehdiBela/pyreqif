@@ -12,7 +12,7 @@ class Form extends React.Component {
         };
     }
 
-    addConfigurations(name, headers){
+    addConfigurations(name, headers) {
 
     }
 
@@ -74,7 +74,6 @@ class Form extends React.Component {
                         event.initEvent('click', true, true);
                         a.dispatchEvent(event);
                     }
-
                 }
             }).catch((err) => {
                 this.setState({errors: [err.message], fileData: null});
@@ -87,27 +86,39 @@ class Form extends React.Component {
     render() {
         return (
             <form onSubmit={this.submit} style={styles.form}>
-                <input type={"file"} accept={".xls, .xlsx"} name={"file"}
-                       onChange={(e) => e.target.files.length ? this.enableInput(e) : ""}/>
-                <button disabled={this.state.disabled}>Submit</button>
+                <p className={"d-flex justify-content-between"}>
+                    <input type={"file"} accept={".xls, .xlsx"} name={"file"} className={"w-100"}
+                           onChange={(e) => e.target.files.length ? this.enableInput(e) : ""}/>
+                    <button disabled={this.state.disabled} className={"btn btn-sm btn-primary"}>Submit</button>
+                </p>
                 {
                     this.state.errors.map((error, count) => {
                         return <p key={`error${count}`} style={styles.alertError}>{error}</p>
                     })
                 }
                 <div style={this.state.fileData ? styles.dBlock : styles.dNone}>
-                    <p>Drag and drop table headers until they match your file data</p>
-                    <p>You can right click on a column header or on a column to remove it</p>
+                    <p className={"alert alert-primary font-weight-bold mb-0"}>
+                        Drag and drop table headers until they match your file data.
+                    </p>
+                    <p className={"alert alert-primary"}>
+                        You can right click on a column header or on a column to remove it.
+                    </p>
                     <p>
                         <ConfigurationSelect/>
                     </p>
-                    <label htmlFor={"name"}>Name this configuration</label>
-                    <input name={"name"} id={"name"} onChange={(e) => {
-                        const state = {...this.state};
-                        state.configName = e.target.value;
-                        this.setState(state);
-                    }}/>
-                    <button>Get ReqIF file</button>
+                    <div className={"mb-1"}>
+                        <label className={"form-label"} htmlFor={"name"}>Name this configuration to save it.</label>
+                        <input name={"name"} id={"name"} className={"form-control"}
+                               onChange={(e) => {
+                                   const state = {...this.state};
+                                   state.configName = e.target.value;
+                                   this.setState(state);
+                               }}/>
+                    </div>
+                    <div className={"text-center"}>
+                        <button className={"btn btn-primary w-100"}>Get ReqIF file</button>
+                    </div>
+
                 </div>
             </form>
         )

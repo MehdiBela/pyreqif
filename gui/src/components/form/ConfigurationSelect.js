@@ -19,7 +19,7 @@ class ConfigurationSelect extends React.Component {
 
     render() {
         return (
-            <select>
+            <select className={"form-select"}>
                 <option>Saved configurations ...</option>
                 {this.state.configurations.map((config, i) => {
                     return <option value={config.headers} key={`config${i}`}>{config.name}</option>
