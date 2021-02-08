@@ -97,11 +97,11 @@ class Form extends React.Component {
                     })
                 }
                 <div style={this.state.fileData ? styles.dBlock : styles.dNone}>
-                    <p className={"alert alert-primary font-weight-bold mb-0"}>
+                    <p className={"alert alert-primary fw-bold mb-0"}>
                         Drag and drop table headers until they match your file data.
                     </p>
                     <p className={"alert alert-primary"}>
-                        You can right click on a column header or on a column to remove it.
+                        You can click on the cross (&#10060;) in a column header to remove it.
                     </p>
                     <p>
                         <ConfigurationSelect/>
