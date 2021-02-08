@@ -11,7 +11,7 @@ class Form extends React.Component {
     }
 
     /**
-     * Enable submit if provided file is valid
+     * Enable submit if provided file is valid else show error
      * @param e
      */
     enableInput(e) {
@@ -29,9 +29,24 @@ class Form extends React.Component {
         this.setState(newState);
     }
 
+    /**
+     * @return {*[]} array of headers text with user ordering
+     */
+    getHeaders() {
+        return [...document.querySelectorAll("th")].map(i => i.textContent);
+    }
+
+    /**
+     * Submit event handler
+     * Either set preview data or trigger reqif file download
+     * @param e
+     */
     submit = (e) => {
         e.preventDefault();
         const data = new FormData(e.target);
+        if (this.state.fileData) {
+            data.set("headers", JSON.stringify(this.getHeaders()));
+        }
         fetch("http://localhost:5000/", {
             body: data,
             method: "post"
@@ -40,8 +55,20 @@ class Form extends React.Component {
                 if (res.status === 400) {
                     this.setState({errors: [data.error], fileData: null})
                 } else {
-                    this.setState({errors: [], fileData: data.data});
-                    this.props.onDataLoaded(data.data);
+                    if (data.data) {
+                        this.setState({errors: [], fileData: data.data});
+                        this.props.onDataLoaded(data.data);
+                    } else if (data.hasOwnProperty("reqif")) {
+                        // create link and trigger click event
+                        const reqif = `data:application/octet-stream,${encodeURIComponent(data.reqif)}`,
+                            a = document.createElement("a");
+                        a.setAttribute("href", reqif);
+                        a.setAttribute("download", "converted.reqif");
+                        const event = document.createEvent('MouseEvents');
+                        event.initEvent('click', true, true);
+                        a.dispatchEvent(event);
+                    }
+
                 }
             }).catch((err) => {
                 this.setState({errors: [err.message], fileData: null});
@@ -62,6 +89,13 @@ class Form extends React.Component {
                         return <p key={`error${count}`} style={styles.alertError}>{error}</p>
                     })
                 }
+                <div style={this.state.fileData ? styles.dBlock : styles.dNone}>
+                    <p>Drag and drop table headers until they match your file data</p>
+                    <p>You can right click on a column header or on a column to remove it</p>
+                    <label htmlFor={"name"}>Name this configuration</label>
+                    <input name={"name"} id={"name"}/>
+                    <button>Get ReqIF file</button>
+                </div>
             </form>
         )
     }
@@ -76,6 +110,12 @@ const styles = {
     },
     form: {
         marginBottom: "1em"
+    },
+    dNone: {
+        display: "none"
+    },
+    dBlock: {
+        display: "block"
     }
 };
 

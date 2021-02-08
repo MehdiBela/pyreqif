@@ -81,7 +81,6 @@ def convert_file(excel_file, file_name, save_file):
     str_io = io.StringIO()
     pyreqif.reqif.dump(document, str_io)
     if save_file:
-        with open(file_name + '.reqif', "w") as f:
-            f.write(str_io.getvalue())
+        return str_io.getvalue()
     else:
         return str_io.getvalue()

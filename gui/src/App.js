@@ -16,7 +16,7 @@ class App extends React.Component {
 
     dataLoaded(data) {
         this.setState({
-            data:data
+            data: data
         })
     }
 
