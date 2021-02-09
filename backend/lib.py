@@ -23,7 +23,7 @@ def get_excel_preview_data(file_bytes):
     return data
 
 
-def reorder_data(file_bytes, headers):
+def reorder_data(file_bytes, headers, removed_columns):
     """
     Create a new workbook from original data according to user defined column orders
     """
@@ -31,10 +31,13 @@ def reorder_data(file_bytes, headers):
     ws = wb.active
     new_wb = Workbook()
     new_ws = new_wb.active
+    new_ws.insert_cols(1, len(headers))
+    for i in removed_columns:
+        ws.delete_cols(i + 1)
     if REQIF_LONG_NAME in headers:
         # long name has to be first column
         idx = headers.index(REQIF_LONG_NAME)
-        new_ws.insert_cols(1, len(headers))
+
         for i, row in enumerate(ws.rows):
             new_cell = new_ws.cell(i + 1, 1)
             new_cell.value = row[idx].value
@@ -62,13 +65,27 @@ def get_saved_configurations(configuration_file):
     configurations = []
     for i in config.sections():
         headers = config[i].get("headers")
-        if headers:
-            headers = headers.split(",")
-            configurations.append({
-                "name": i,
-                "headers": headers
-            })
+        headers = headers.split(",")
+        removed_columns = config[i].get("headers")
+        removed_columns = [int(i) for i in removed_columns.split(",")]
+        configurations.append({
+            "name": i,
+            "headers": headers
+        })
     return configurations
+
+
+def add_configuration(name, headers, removed_columns, configuration_file):
+    new_config = {
+        "headers": ",".join(headers),
+        "removed_columns": ",".join([str(i) for i in removed_columns])
+    }
+    config = configparser.ConfigParser()
+    config.read(configuration_file)
+    config[name] = new_config
+    new_config["name"] = name
+    with open(configuration_file, "a") as f:
+        config.write(f)
 
 
 class TooManySheetsException(Exception):

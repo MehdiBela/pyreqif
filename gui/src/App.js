@@ -10,16 +10,31 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: null
+            data: null,
+            removedColumns: []
         };
         this.dataLoaded = this.dataLoaded.bind(this);
+        this.removedColumns = this.removedColumns.bind(this);
     }
 
     dataLoaded(data) {
         this.setState({
-            data: data
+            data: data,
+            removedColumns: []
         })
     }
+
+    removedColumns(colIndex) {
+        if (window.confirm(`Are you sure you want to remove column ${colIndex + 1} ?`)) {
+            const state = {...this.state};
+            for (const i of state.data) {
+                i.splice(colIndex, 1);
+            }
+            state.removedColumns = [...this.state.removedColumns, colIndex];
+            this.setState(state);
+        }
+    }
+
 
     render() {
         return (
@@ -31,13 +46,13 @@ class App extends React.Component {
                         </div>
                     </div>
                     <div className={"d-flex"}>
-                        <div className={"mx-auto"}>
-                            <Form onDataLoaded={this.dataLoaded}/>
+                        <div className={"mx-auto"} style={styles.width400}>
+                            <Form onDataLoaded={this.dataLoaded} removedColumns={this.state.removedColumns}/>
                         </div>
                     </div>
                     <div className={"row"}>
                         <div className={"col-12"}>
-                            <Table data={this.state.data}/>
+                            <Table data={this.state.data} removedColumns={this.removedColumns}/>
                         </div>
                     </div>
                 </div>
@@ -50,6 +65,9 @@ const styles = {
     bgFra: {
         backgroundColor: "#09357a",
         color: "#ffffff"
+    },
+    width400: {
+        minWidth: 400
     }
 };
 

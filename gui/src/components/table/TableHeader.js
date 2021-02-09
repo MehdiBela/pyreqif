@@ -1,6 +1,13 @@
 import * as React from "react";
 
 class TableHeader extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showDelete: false
+        }
+    }
+
     bgHover = "bg-primary";
 
     dragStart(e) {
@@ -16,6 +23,18 @@ class TableHeader extends React.Component {
         e.target.classList.add(this.bgHover);
     }
 
+    mouseEnter() {
+        this.setState({
+            showDelete: true
+        })
+    }
+
+    mouseLeave() {
+        this.setState({
+            showDelete: false
+        })
+    }
+
     render() {
         return (
             <th className={"position-relative"}
@@ -23,9 +42,16 @@ class TableHeader extends React.Component {
                 onDragStart={(e) => this.dragStart(e)}
                 onDragLeave={(e) => this.dragExit(e)}
                 onDragExit={(e) => this.dragExit(e)}
+                onMouseEnter={() => this.mouseEnter()}
+                onMouseLeave={() => this.mouseLeave()}
                 draggable={true} id={this.props.id}>
                 {this.props.name}
-                <a style={styles.closeBtn} onClick={() => this.props.removeHeader(this)}>&#10060;</a>
+                {
+                    this.state.showDelete ?
+                        <a style={styles.closeBtn} onClick={() => this.props.removeHeader(this)}>&#10060;</a>
+                        : ""
+                }
+
             </th>
         )
     }

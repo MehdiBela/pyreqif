@@ -7,7 +7,8 @@ from flask import Flask, render_template, Blueprint, request, jsonify
 from flask_cors import CORS, cross_origin
 from openpyxl.utils.exceptions import InvalidFileException
 
-from backend.lib import get_excel_preview_data, TooManySheetsException, reorder_data, get_saved_configurations
+from backend.lib import get_excel_preview_data, TooManySheetsException, reorder_data, get_saved_configurations, \
+    add_configuration
 from backend.xlsx2reqif import convert_file
 
 INVALID_FILE_ERROR = "Invalid file format, please choose a valid Excel spreadsheet. Supported formats are: .xlsx,.xlsm,.xltx,.xltm."
@@ -43,10 +44,20 @@ def index():
             excel_file = request.files.get("file")
             excel_data = BytesIO(excel_file.read())
             headers = request.form.get("headers")
+            removed_columns = request.form.get("removedColumns")
+            name = request.form.get("name")
             if headers:
                 headers = json.loads(headers)
-                reordered_data = reorder_data(excel_data, headers)
+                removed_columns = json.loads(removed_columns)
+                reordered_data = reorder_data(excel_data, headers, removed_columns)
                 file_data = convert_file(BytesIO(reordered_data), excel_file.filename, save_file=True)
+                if name:
+                    add_configuration(name, headers, removed_columns, CONFIGURATION_FILE)
+                    return jsonify(
+                        {
+                            "reqif": file_data,
+                            "config": {"name": name, "headers": headers, "removed_columns": removed_columns}
+                        })
                 return jsonify({"reqif": file_data})
             try:
                 data = get_excel_preview_data(excel_data)

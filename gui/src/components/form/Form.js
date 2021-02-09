@@ -12,8 +12,14 @@ class Form extends React.Component {
         };
     }
 
-    addConfigurations(name, headers) {
+    addConfiguration(config) {
+        try {
+            // configurations is not defined in dev mode as not served by flask
+            // eslint-disable-next-line no-undef
+            configurations.push(config);
+        } catch {
 
+        }
     }
 
     /**
@@ -51,8 +57,17 @@ class Form extends React.Component {
         e.preventDefault();
         const data = new FormData(e.target);
         if (this.state.fileData) {
-            data.set("headers", JSON.stringify(this.getHeaders()));
+            // second submit to get reqif
+            const headers = this.getHeaders();
+            if (headers.length !== this.state.fileData[0].length) {
+                const state = {...this.state};
+                state.errors = [("Headers and columns count does not match")];
+                this.setState(state);
+                return;
+            }
+            data.set("headers", JSON.stringify(headers));
         }
+        data.set("removedColumns", JSON.stringify(this.props.removedColumns));
         fetch("http://localhost:5000/", {
             body: data,
             method: "post"
@@ -73,6 +88,9 @@ class Form extends React.Component {
                         const event = document.createEvent('MouseEvents');
                         event.initEvent('click', true, true);
                         a.dispatchEvent(event);
+                    }
+                    if(data.hasOwnProperty("config")){
+                        this.addConfiguration(data.config);
                     }
                 }
             }).catch((err) => {

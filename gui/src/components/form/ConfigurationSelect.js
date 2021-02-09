@@ -22,7 +22,7 @@ class ConfigurationSelect extends React.Component {
             <select className={"form-select"}>
                 <option>Saved configurations ...</option>
                 {this.state.configurations.map((config, i) => {
-                    return <option value={config.headers} key={`config${i}`}>{config.name}</option>
+                    return <option value={i} key={`config${i}`}>{config.name}</option>
                 })}
             </select>
         )
