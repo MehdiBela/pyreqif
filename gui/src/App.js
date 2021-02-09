@@ -35,6 +35,10 @@ class App extends React.Component {
         }
     }
 
+    selectConfiguration(config){
+
+    }
+
 
     render() {
         return (
@@ -47,7 +51,7 @@ class App extends React.Component {
                     </div>
                     <div className={"d-flex"}>
                         <div className={"mx-auto"} style={styles.width400}>
-                            <Form onDataLoaded={this.dataLoaded} removedColumns={this.state.removedColumns}/>
+                            <Form onDataLoaded={this.dataLoaded} removedColumns={this.state.removedColumns} onSelectConfiguration={this.selectConfiguration}/>
                         </div>
                     </div>
                     <div className={"row"}>

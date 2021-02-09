@@ -17,9 +17,7 @@ class Form extends React.Component {
             // configurations is not defined in dev mode as not served by flask
             // eslint-disable-next-line no-undef
             configurations.push(config);
-        } catch {
-
-        }
+        } catch {}
     }
 
     /**
@@ -122,7 +120,7 @@ class Form extends React.Component {
                         You can click on the cross (&#10060;) in a column header to remove it.
                     </p>
                     <p>
-                        <ConfigurationSelect/>
+                        <ConfigurationSelect onSelectConfiguration={this.props.selectConfiguration}/>
                     </p>
                     <div className={"mb-1"}>
                         <label className={"form-label"} htmlFor={"name"}>Name this configuration to save it.</label>

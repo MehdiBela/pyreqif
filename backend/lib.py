@@ -66,11 +66,12 @@ def get_saved_configurations(configuration_file):
     for i in config.sections():
         headers = config[i].get("headers")
         headers = headers.split(",")
-        removed_columns = config[i].get("headers")
-        removed_columns = [int(i) for i in removed_columns.split(",")]
+        removed_columns = config[i].get("removed_columns")
+        removed_columns = [int(i) for i in removed_columns.split(",")] if removed_columns else []
         configurations.append({
             "name": i,
-            "headers": headers
+            "headers": headers,
+            "removed_columns": removed_columns
         })
     return configurations
 
