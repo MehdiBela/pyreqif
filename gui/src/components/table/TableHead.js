@@ -6,7 +6,8 @@ class TableHead extends React.Component {
         super(props);
         this.state = {
             tableHeaders: [],
-        }
+        };
+        this.removeHeader = this.removeHeader.bind(this);
     }
 
     bgHover = "bg-primary";
@@ -24,9 +25,18 @@ class TableHead extends React.Component {
             "ReqIF.Text"
         ];
         const tHeaders = headers.map((header, count) => {
-            return <TableHeader name={header} key={`head${count}`} id={`head${count}`}/>
+            return <TableHeader name={header} key={`head${count}`} id={`head${count}`}
+                                removeHeader={this.removeHeader}/>
         });
         this.setState({tableHeaders: tHeaders});
+    }
+
+    removeHeader(tableHeader) {
+        const state = {...this.state};
+        if (window.confirm(`Are you sure you want to remove ${tableHeader.props.name} ?`)) {
+            state.tableHeaders.splice(state.tableHeaders.indexOf(state.tableHeaders.find(i => i.key === tableHeader.props.id)), 1);
+            this.setState(state);
+        }
     }
 
     /**

@@ -1,5 +1,5 @@
 table, tr, td, th {
-    border: 1px solid black;
+    border: 1px solid black !important;
     margin: -1px;
     border-collapse: collapse;
 }
@@ -19,4 +19,9 @@ th {
 
 .w-100 {
     width: 100% !important;
+}
+
+th a, td a {
+    text-decoration: none;
+    cursor: pointer;
 }
