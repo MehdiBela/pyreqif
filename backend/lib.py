@@ -85,7 +85,7 @@ def add_configuration(name, headers, removed_columns, configuration_file):
     config.read(configuration_file)
     config[name] = new_config
     new_config["name"] = name
-    with open(configuration_file, "a") as f:
+    with open(configuration_file, "w") as f:
         config.write(f)
 
 
