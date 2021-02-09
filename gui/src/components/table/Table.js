@@ -19,7 +19,7 @@ class Table extends React.Component {
         return (
             <div className={this.props.data ? "d-block" : "d-none"}>
                 <table>
-                    <TableHead/>
+                    <TableHead headers={this.props.headers} drop={this.props.drop}/>
                     <tbody>
                     {this.props.data ? this.props.data.map((i, count) => {
                         return (
